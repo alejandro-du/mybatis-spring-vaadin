@@ -9,8 +9,8 @@ import java.util.List;
 @Mapper
 public interface CompanyService {
 
-    @Select("SELECT * FROM company WHERE name ILIKE '%' || #{name} || '%' ORDER BY id")
-    List<Company> findByName(String name);
+    @Select("SELECT * FROM company ORDER BY id")
+    List<Company> findAll();
 
     @Update("UPDATE company SET name = #{name}, website = #{website} WHERE id = #{id}")
     void update(Company company);

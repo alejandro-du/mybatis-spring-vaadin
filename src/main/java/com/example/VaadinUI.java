@@ -15,47 +15,38 @@ import java.util.List;
 public class VaadinUI extends UI {
 
     @Autowired
-    private CompanyService companyService;
+    private CompanyService service;
+
     private Company company;
 
     private Grid grid = new Grid();
     private TextField name = new TextField("Name");
     private TextField website = new TextField("Website");
-    private Button save = new Button("Save");
+    private Button save = new Button("Save", e -> saveCompany());
 
     @Override
     protected void init(VaadinRequest request) {
-        TextField filter = new TextField("Filter by name:");
-        filter.addTextChangeListener(e -> {
-            updateGrid(e.getText());
-        });
+        updateGrid();
+        grid.addSelectionListener(e -> updateForm());
 
-        grid.addSelectionListener(e -> setCompany((Company) grid.getSelectedRow()));
-
-        save.addClickListener(e -> {
-            companyService.update(company);
-            updateGrid(filter.getValue());
-        });
-
-        VerticalLayout layout = new VerticalLayout(filter, grid, name, website, save);
+        VerticalLayout layout = new VerticalLayout(grid, name, website, save);
         layout.setMargin(true);
         layout.setSpacing(true);
         setContent(layout);
-        updateGrid("");
     }
 
-    private void setCompany(Company company) {
-        this.company = company;
-        setFormVisible(company != null);
-        if (company != null) {
-            BeanFieldGroup.bindFieldsUnbuffered(company, this);
-        }
-    }
-
-    private void updateGrid(String nameFilter) {
-        List<Company> companies = companyService.findByName(nameFilter);
+    private void updateGrid() {
+        List<Company> companies = service.findAll();
         grid.setContainerDataSource(new BeanItemContainer<>(Company.class, companies));
         setFormVisible(false);
+    }
+
+    private void updateForm() {
+        setFormVisible(!grid.getSelectedRows().isEmpty());
+        if (!grid.getSelectedRows().isEmpty()) {
+            company = (Company) grid.getSelectedRow();
+            BeanFieldGroup.bindFieldsUnbuffered(company, this);
+        }
     }
 
     private void setFormVisible(boolean visible) {
@@ -64,4 +55,8 @@ public class VaadinUI extends UI {
         save.setVisible(visible);
     }
 
+    private void saveCompany() {
+        service.update(company);
+        updateGrid();
+    }
 }
