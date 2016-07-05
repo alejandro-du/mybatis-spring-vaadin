@@ -1,11 +1,13 @@
-CREATE TABLE COMPANY (
-    ID INT IDENTITY,
-    NAME VARCHAR(255) NOT NULL,
-    WEBSITE VARCHAR(255)
+DROP TABLE IF EXISTS company;
+
+CREATE TABLE company (
+    id SERIAL,
+    name VARCHAR(255) NOT NULL,
+    website VARCHAR(255)
 );
 
-INSERT INTO COMPANY(NAME, WEBSITE) VALUES ('Vaadin', 'https://vaadin.com');
-INSERT INTO COMPANY(NAME, WEBSITE) VALUES ('Red Hat', 'https://www.redhat.com');
-INSERT INTO COMPANY(NAME, WEBSITE) VALUES ('Canonical', 'http://www.canonical.com');
-INSERT INTO COMPANY(NAME, WEBSITE) VALUES ('Sonatype', 'http://www.sonatype.com');
-INSERT INTO COMPANY(NAME, WEBSITE) VALUES ('Alfresco', 'https://www.alfresco.com');
+INSERT INTO company(name, website) VALUES ('Vaadin', 'https://vaadin.com');
+INSERT INTO company(name, website) VALUES ('Red Hat', 'https://www.redhat.com');
+INSERT INTO company(name, website) VALUES ('Canonical', 'http://www.canonical.com');
+INSERT INTO company(name, website) VALUES ('Sonatype', 'http://www.sonatype.com');
+INSERT INTO company(name, website) VALUES ('Alfresco', 'https://www.alfresco.com');
