@@ -1,14 +1,11 @@
 package com.example;
 
 import com.vaadin.annotations.Theme;
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.Binder;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 @SpringUI
 @Theme("valo")
@@ -19,7 +16,7 @@ public class VaadinUI extends UI {
 
     private Company company;
 
-    private Grid grid = new Grid();
+    private Grid<Company> grid = new Grid(Company.class);
     private TextField name = new TextField("Name");
     private TextField website = new TextField("Website");
     private Button save = new Button("Save", e -> saveCompany());
@@ -36,16 +33,17 @@ public class VaadinUI extends UI {
     }
 
     private void updateGrid() {
-        List<Company> companies = service.findAll();
-        grid.setContainerDataSource(new BeanItemContainer<>(Company.class, companies));
+        grid.setItems(service.findAll());
         setFormVisible(false);
     }
 
     private void updateForm() {
-        setFormVisible(!grid.getSelectedRows().isEmpty());
-        if (!grid.getSelectedRows().isEmpty()) {
-            company = (Company) grid.getSelectedRow();
-            BeanFieldGroup.bindFieldsUnbuffered(company, this);
+        setFormVisible(!grid.getSelectedItems().isEmpty());
+        if (!grid.getSelectedItems().isEmpty()) {
+            company = grid.asSingleSelect().getValue();
+            Binder<Company> binder = new Binder<>(Company.class);
+            binder.bindInstanceFields(this);
+            binder.setBean(company);
         }
     }
 
