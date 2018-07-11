@@ -1,18 +1,16 @@
 package com.example;
 
-import com.vaadin.annotations.Theme;
-import com.vaadin.data.Binder;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.spring.annotation.SpringUI;
-import com.vaadin.ui.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.router.Route;
 
-@SpringUI
-@Theme("valo")
-public class VaadinUI extends UI {
+@Route("")
+public class VaadinUI extends VerticalLayout {
 
-    @Autowired
-    private CompanyService service;
+    private final CompanyService service;
 
     private Company company;
 
@@ -21,15 +19,15 @@ public class VaadinUI extends UI {
     private TextField website = new TextField("Website");
     private Button save = new Button("Save", e -> saveCompany());
 
-    @Override
-    protected void init(VaadinRequest request) {
+    public VaadinUI(CompanyService service) {
+        this.service = service;
+
         updateGrid();
         grid.addSelectionListener(e -> updateForm());
 
-        VerticalLayout layout = new VerticalLayout(grid, name, website, save);
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        setContent(layout);
+        add(grid, name, website, save);
+        setMargin(true);
+        setSpacing(true);
     }
 
     private void updateGrid() {
